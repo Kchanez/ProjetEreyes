@@ -1,0 +1,96 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; 
+    margin: 0;
+    padding: 20px;
+}
+
+#movies {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 40px; 
+    justify-items: center; 
+    margin-top: 20px;
+    margin-bottom: 45px;
+}
+
+.movie {
+    background-color: #fff;
+    border-radius: 10px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); 
+    overflow: hidden;
+    transition: transform 1s ease, box-shadow 0.3s ease; 
+    cursor: pointer; 
+    width: 100%; 
+    max-width: 500px; 
+}
+.movie:hover {
+    transform: scale(1.05); 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); 
+}
+
+.movie img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px; 
+}
+
+.movie h2 {
+    font-size: 1.3rem; 
+    margin: 10px 0;
+    color: #333; 
+    font-weight: bold;
+    text-align: center;
+}
+
+.movie p {
+    font-size: 0.95rem; 
+    color: #666; 
+    line-height: 1.5;
+    text-align: justify; 
+    margin: 10px 20px;
+}
+
+.movie:hover h2 {
+    color: #007BFF; 
+}
+
+@media (max-width: 768px) {
+    #movies {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 480px) {
+    #movies {
+        grid-template-columns: 1fr; 
+    }
+}
+
+
+/*style bouton */
+
+#download-csv {
+    margin-bottom: 20px; 
+    padding: 10px 20px;
+    background-color: #007BFF; 
+    color: white; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 16px; 
+    transition: background-color 0.3s, transform 0.2s; 
+}
+
+#download-csv:hover {
+    background-color: #0056b3; 
+    transform: scale(1.05); 
+}
+
+#download-csv:active {
+    background-color: #004085; 
+    transform: scale(1); 
+}
+
+
