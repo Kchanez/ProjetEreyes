@@ -1,0 +1,130 @@
+/* Animation pour le changement de fond */
+@keyframes backgroundChange {
+    0% {
+        background-color: #ffffff; /* Blanc */
+    }
+    50% {
+        background-color: #000000; /* Noir */
+    }
+    100% {
+        background-color: #ffffff; /* Retour au blanc */
+    }
+}
+/* Application de l'animation au body */
+body {
+    font-family: 'Cinzel', serif;
+    color: #e63946;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    animation: backgroundChange 15s infinite; /* Animation de fond changeant */
+    transition: background-color 1s ease-in-out;
+}
+
+/* Global Styling */
+h1, h3 {
+    text-align: center;
+    color: #f4a261;
+    text-shadow: 2px 2px 4px #000;
+    animation: flicker 2s infinite alternate; /* Animation de clignotement */
+}
+
+canvas {
+    display: block;
+    margin: 20px auto;
+    max-width: 90%;
+    border: 2px solid #e63946; /* Bordure rouge */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8); /* Effet d'ombre */
+}
+
+div {
+    padding: 20px;
+}
+
+/* Flash lumineux pour les titres */
+.movie {
+    background-color: #1a1a1a;
+    margin: 20px auto;
+    padding: 20px;
+    border: 1px solid #e63946;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.8);
+    color: #fff;
+    max-width: 800px;
+    animation: shake 1s ease-in-out infinite; /* Animation de tremblement */
+}
+
+.movie img {
+    display: block;
+    margin: 0 auto 10px;
+    max-width: 100%;
+    border-radius: 5px;
+    border: 2px solid #e63946;
+    animation: flicker 1s infinite alternate; /* Clignotement sur l'image */
+}
+
+/* Effet de survol sur les cartes de films */
+.movie:hover {
+    background-color: #e63946;
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.7); /* Ombre rouge intense */
+}
+
+.movie p {
+    font-size: 16px;
+    color: #ddd;
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-size: 14px;
+    border-top: 2px solid #e63946;
+}
+
+
+/* Animation du bouton pour qu'il semble s'agrandir au survol */
+button {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #e63946;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: all 0.3s ease-in-out;
+    animation: shake 2s ease-in-out infinite; /* Tremblement continu sur le bouton */
+}
+
+button:hover {
+    background-color: #a4161a;
+    transform: scale(1.1);
+    animation: none; /* Arrêt du tremblement au survol */
+}
+
+/* Effet d'horreur pour les transitions entre films */
+.movie h2 {
+    text-align: center;
+    color: #f4a261;
+    font-size: 24px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px #000;
+    animation: flicker 1s infinite alternate; /* Clignotement du titre */
+}
+
+footer {
+    text-align: center;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #1a1a1a;
+    color: #fff;
+    font-size: 14px;
+    border-top: 2px solid #e63946;
+    animation: shake 1s ease-in-out infinite; /* Animation de tremblement pour le footer */
+}
