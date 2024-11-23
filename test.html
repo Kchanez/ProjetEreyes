@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Film</title>
+    <style>
+        body {
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+        background-color: #f9fafc;
+        color: #333;
+        margin: 0;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0077ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #0077ff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        #movie-info {
+            margin: auto;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 80%;
+            align-items: center;
+        }
+
+        #movie-info img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #movie-info h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #movie-info p {
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        #movie-stats {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+
+        .bottle-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .bottle {
+            position: relative; /* Définit un contexte pour les éléments enfants positionnés */
+            width: 5%;
+            height: 300px;
+            border: 2px solid #DBE2EB;
+            border-top: 0px;
+            border-radius: 0px 0px 15px 15px;
+            background: linear-gradient(to bottom, #EEFAFF, #fff);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: inline-flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+
+        .bottle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .bottle-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #ff4d4d;
+            transition: height 0.3s ease-out;
+        }
+
+        .bottle-label {
+            position: relative;
+            top: -50%;
+            z-index: 1;
+        }
+        .label {
+            z-index: 1;
+            position: absolute;
+            bottom: 80%;
+        }
+        
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="movie-search" placeholder="Rechercher un film...">
+        <button onclick="searchMovie()">Chercher</button>
+    </div>
+
+    <div id="movie-info"></div>
+    <div id="movie-stats"></div>
+
+    <div class="bottle-container" id="bottle-container"></div>
+
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767';
+        const baseUrl = 'https://api.themoviedb.org/3';
+
+        // Fonction de recherche de film
+        function searchMovie() {
+            const query = document.getElementById('movie-search').value.trim();
+            if (query === '') {
+                alert('Veuillez entrer le nom d\'un film.');
+                return;
+            }
+
+            // Appel à l'API TMDb pour rechercher un film
+            fetch(`${baseUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length > 0) {
+                        displayMovieInfo(data.results[0]);
+                    } else {
+                        alert('Aucun film trouvé.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la recherche du film.');
+                });
+        }
+
+        // Affichage des informations du film
+        function displayMovieInfo(movie) {
+            const movieInfo = document.getElementById('movie-info');
+            const movieStats = document.getElementById('movie-stats');
+            const bottleContainer = document.getElementById('bottle-container');
+
+            // Mise à jour des informations du film
+            movieInfo.innerHTML = `
+                <h2>${movie.title} (${new Date(movie.release_date).getFullYear()})</h2>
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <p><strong>Description:</strong> ${movie.overview}</p>
+            `;
+
+            // Mise à jour des statistiques du film
+            movieStats.innerHTML = `
+                <p><strong>Note moyenne:</strong> ${movie.vote_average}</p>
+                <p><strong>Popularité:</strong> ${movie.popularity}</p>
+                <p><strong>Nombre de votes:</strong> ${movie.vote_count}</p>
+            `;
+
+            // Calcul des pourcentages pour les bouteilles
+            const voteAveragePercent = movie.vote_average * 10; // Note moyenne x 10 pour obtenir un pourcentage
+            const popularityPercent = Math.min((movie.popularity / 1000) * 100, 100); // Popularité convertie en % (limitée à 100%)
+            const voteCountPercent = Math.min((movie.vote_count / 1000) * 100, 100); // Nombre de votes converti en % (limitée à 100%)
+
+            // Création des bouteilles avec les pourcentages
+            bottleContainer.innerHTML = `
+                <div class="bottle">
+                    <div class="label"> Note </div>
+                    <div class="bottle-label">${voteAveragePercent}%</div>
+                    <div class="bottle-fill" style="height: ${voteAveragePercent}%"></div>
+                </div>
+                <div class="bottle">
+                    <div class="label"> Popularité </div>
+                    <div class="bottle-label">${popularityPercent}%</div>
+                    <div class="bottle-fill" style="height: ${popularityPercent}%"></div>
+                </div>
+                <div class="bottle">
+                    <div class="label"> Votes </div>
+                    <div class="bottle-label"> ${voteCountPercent}% </div>    
+                    <div class="bottle-fill" style="height: ${voteCountPercent}%"></div> 
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>
