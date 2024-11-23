@@ -6,11 +6,11 @@
     <title>Recherche de Film</title>
     <style>
         body {
-        font-family: 'Arial', sans-serif;
-        padding: 20px;
-        background-color: #f9fafc;
-        color: #333;
-        margin: 0;
+            font-family: 'Arial', sans-serif;
+            padding: 20px;
+            background-color: #f9fafc;
+            color: #333;
+            margin: 0;
         }
 
         .search-container {
@@ -77,14 +77,10 @@
         }
 
         #movie-info p {
-            line-height: 1.6;
+            line-height: 1.2;
             font-size: 16px;
-        }
-
-        #movie-stats {
-            text-align: center;
-            margin-top: 20px;
-            font-size: 16px;
+            text-align: left;
+            width: 80%;
         }
 
         .bottle-container {
@@ -95,10 +91,10 @@
         }
 
         .bottle {
-            position: relative; /* Définit un contexte pour les éléments enfants positionnés */
+            position: relative;
             width: 5%;
             height: 300px;
-            border: 2px solid #DBE2EB;
+            border: 10px solid #DBE2EB;
             border-top: 0px;
             border-radius: 0px 0px 15px 15px;
             background: linear-gradient(to bottom, #EEFAFF, #fff);
@@ -110,7 +106,6 @@
             transition: transform 0.3s;
         }
 
-
         .bottle:hover {
             transform: scale(1.1);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
@@ -121,23 +116,97 @@
             bottom: 0;
             width: 100%;
             background-color: #ff4d4d;
-            transition: height 0.3s ease-out;
+            height: 0;
+            animation: fill-animation 3s ease-out forwards;
+        }
+
+        @keyframes fill-animation {
+            from {
+                height: 0;
+            }
+            to {
+                height: var(--fill-height, 0%);
+            }
         }
 
         .bottle-label {
             position: relative;
-            top: -50%;
             z-index: 1;
+            bottom: 20%;
         }
+
         .label {
-            z-index: 1;
             position: absolute;
             bottom: 80%;
+            z-index: 1;
         }
-        
+
+        /* Mode Nuit */
+        .night-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .night-mode button {
+            background-color: #444;
+        }
+
+        .night-mode input[type="text"] {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        /* Ciel étoilé */
+        .night-mode::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://cdn.pixabay.com/photo/2017/08/30/22/31/sky-2695562_960_720.jpg') center center no-repeat;
+            background-size: cover;
+            opacity: 0.4;
+            pointer-events: none;
+            animation: starsAnimation 20s infinite;
+        }
+
+        /* Animation des étoiles */
+        @keyframes starsAnimation {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(1000px, 0);
+            }
+        }
+
+        /* Mode Horreur */
+        .horror-mode {
+            background-color: #0c0c0c;
+
+        }
+
+        .horror-mode button {
+            background-color: #ff0000;
+        }
+
+        .horror-mode input[type="text"] {
+            background-color: #7a0000;
+            color: #ff5c5c;
+            border: 1px solid #ff2e2e;
+        }
     </style>
 </head>
 <body>
+
+    <div style="text-align: right; margin-bottom: 30px;">
+        <button onclick="toggleMode('night')">Mode Nuit</button>
+        <button onclick="toggleMode('horror')">Mode Horreur</button>
+    </div>
 
     <div class="search-container">
         <input type="text" id="movie-search" placeholder="Rechercher un film...">
@@ -145,15 +214,12 @@
     </div>
 
     <div id="movie-info"></div>
-    <div id="movie-stats"></div>
-
     <div class="bottle-container" id="bottle-container"></div>
 
     <script>
         const apiKey = 'f419f1613639c532f9f464ad9e648767';
         const baseUrl = 'https://api.themoviedb.org/3';
 
-        // Fonction de recherche de film
         function searchMovie() {
             const query = document.getElementById('movie-search').value.trim();
             if (query === '') {
@@ -161,12 +227,11 @@
                 return;
             }
 
-            // Appel à l'API TMDb pour rechercher un film
             fetch(`${baseUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.results.length > 0) {
-                        displayMovieInfo(data.results[0]);
+                        fetchMovieDetails(data.results[0].id);
                     } else {
                         alert('Aucun film trouvé.');
                     }
@@ -177,51 +242,65 @@
                 });
         }
 
-        // Affichage des informations du film
-        function displayMovieInfo(movie) {
+        function fetchMovieDetails(movieId) {
+            fetch(`${baseUrl}/movie/${movieId}?api_key=${apiKey}&language=fr-FR`)
+                .then(response => response.json())
+                .then(movieDetails => {
+                    displayMovieInfo(movieDetails);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                });
+        }
+
+        function displayMovieInfo(movie) 
+        {
             const movieInfo = document.getElementById('movie-info');
-            const movieStats = document.getElementById('movie-stats');
             const bottleContainer = document.getElementById('bottle-container');
 
-            // Mise à jour des informations du film
             movieInfo.innerHTML = `
-                <h2>${movie.title} (${new Date(movie.release_date).getFullYear()})</h2>
+                <h1>${movie.title} (${new Date(movie.release_date).getFullYear()})</h1>
                 <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
                 <p><strong>Description:</strong> ${movie.overview}</p>
-            `;
-
-            // Mise à jour des statistiques du film
-            movieStats.innerHTML = `
+                <p><strong>Genres:</strong> ${movie.genres.map(genre => genre.name).join(', ')}</p>
+                <p><strong>Langue originale:</strong> ${movie.original_language.toUpperCase()}</p>
+                <p><strong>Pays de production:</strong> ${movie.production_countries.map(country => country.name).join(', ')}</p>
+                <p><strong>Durée:</strong> ${movie.runtime} minutes</p>
                 <p><strong>Note moyenne:</strong> ${movie.vote_average}</p>
                 <p><strong>Popularité:</strong> ${movie.popularity}</p>
                 <p><strong>Nombre de votes:</strong> ${movie.vote_count}</p>
             `;
 
-            // Calcul des pourcentages pour les bouteilles
-            const voteAveragePercent = movie.vote_average * 10; // Note moyenne x 10 pour obtenir un pourcentage
-            const popularityPercent = Math.min((movie.popularity / 1000) * 100, 100); // Popularité convertie en % (limitée à 100%)
-            const voteCountPercent = Math.min((movie.vote_count / 1000) * 100, 100); // Nombre de votes converti en % (limitée à 100%)
+            const voteAveragePercent = movie.vote_average * 10;
+            const popularityPercent = Math.min((movie.popularity / 1000) * 100, 100);
+            const voteCountPercent = Math.min((movie.vote_count / 1000) * 100, 100);
 
-            // Création des bouteilles avec les pourcentages
             bottleContainer.innerHTML = `
                 <div class="bottle">
-                    <div class="label"> Note </div>
+                    <div class="label">Note</div>
                     <div class="bottle-label">${voteAveragePercent}%</div>
-                    <div class="bottle-fill" style="height: ${voteAveragePercent}%"></div>
+                    <div class="bottle-fill" style="--fill-height: ${voteAveragePercent}%"></div>
                 </div>
                 <div class="bottle">
-                    <div class="label"> Popularité </div>
+                    <div class="label">Popularité</div>
                     <div class="bottle-label">${popularityPercent}%</div>
-                    <div class="bottle-fill" style="height: ${popularityPercent}%"></div>
+                    <div class="bottle-fill" style="--fill-height: ${popularityPercent}%"></div>
                 </div>
                 <div class="bottle">
-                    <div class="label"> Votes </div>
-                    <div class="bottle-label"> ${voteCountPercent}% </div>    
-                    <div class="bottle-fill" style="height: ${voteCountPercent}%"></div> 
+                    <div class="label">Votes</div>
+                    <div class="bottle-label">${voteCountPercent}%</div>
+                    <div class="bottle-fill" style="--fill-height: ${voteCountPercent}%"></div>
                 </div>
             `;
         }
-    </script>
 
+        function toggleMode(mode) {
+            if (mode === 'night') {
+                document.body.classList.toggle('night-mode');
+            } else if (mode === 'horror') {
+                document.body.classList.toggle('horror-mode');
+            }
+        }
+    </script>
 </body>
 </html>
