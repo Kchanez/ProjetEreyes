@@ -133,65 +133,20 @@
             position: relative;
             z-index: 1;
             bottom: 20%;
+            color:#fff;
         }
 
         .label {
             position: absolute;
+            color:#fff;
             bottom: 80%;
             z-index: 1;
-        }
-
-        /* Mode Nuit */
-        .night-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .night-mode button {
-            background-color: #444;
-        }
-
-        .night-mode input[type="text"] {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        /* Ciel étoilé */
-        .night-mode::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://cdn.pixabay.com/photo/2017/08/30/22/31/sky-2695562_960_720.jpg') center center no-repeat;
-            background-size: cover;
-            opacity: 0.4;
-            pointer-events: none;
-            animation: starsAnimation 20s infinite;
-        }
-
-        /* Animation des étoiles */
-        @keyframes starsAnimation {
-            0% {
-                transform: translate(0, 0);
-            }
-            100% {
-                transform: translate(1000px, 0);
-            }
         }
 
         /* Mode Horreur */
         .horror-mode {
             background-color: #0c0c0c;
-
-        }
-
-        .horror-mode button {
-            background-color: #ff0000;
+            color: #ff5c5c;
         }
 
         .horror-mode input[type="text"] {
@@ -199,14 +154,42 @@
             color: #ff5c5c;
             border: 1px solid #ff2e2e;
         }
+
+        .horror-mode button {
+            background-color: #ff0000;
+            color: #fff;
+            border: 1px solid #7a0000;
+        }
+
+        .horror-mode button:hover {
+            background-color: #cc0000;
+        }
+
+        .horror-mode #movie-info {
+            background-color: #1a0000;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.4);
+        }
+
+        .horror-mode #movie-info img {
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.7);
+        }
+
+        .horror-mode .bottle {
+            background: linear-gradient(to bottom, #7a0000, #400000);
+            border: 10px solid #600000;
+        }
+
+        .horror-mode .bottle:hover {
+            box-shadow: 0 6px 12px rgba(255, 0, 0, 0.6);
+        }
+
+        .horror-mode .bottle-fill {
+            background-color: #ff1a1a;
+        }
     </style>
 </head>
 <body>
-
-    <div style="text-align: right; margin-bottom: 30px;">
-        <button onclick="toggleMode('night')">Mode Nuit</button>
-        <button onclick="toggleMode('horror')">Mode Horreur</button>
-    </div>
 
     <div class="search-container">
         <input type="text" id="movie-search" placeholder="Rechercher un film...">
@@ -219,6 +202,11 @@
     <script>
         const apiKey = 'f419f1613639c532f9f464ad9e648767';
         const baseUrl = 'https://api.themoviedb.org/3';
+
+        // Appliquer le mode horreur automatiquement
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('horror-mode');
+        });
 
         function searchMovie() {
             const query = document.getElementById('movie-search').value.trim();
@@ -293,14 +281,7 @@
                 </div>
             `;
         }
-
-        function toggleMode(mode) {
-            if (mode === 'night') {
-                document.body.classList.toggle('night-mode');
-            } else if (mode === 'horror') {
-                document.body.classList.toggle('horror-mode');
-            }
-        }
     </script>
+
 </body>
 </html>
