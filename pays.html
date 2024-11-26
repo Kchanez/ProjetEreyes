@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Statistiques des Films d'Horreur</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="pays.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>Statistiques des Films d'Horreur par Pays</h1>
+    <div>
+        <h3>Graphique</h3>
+        <canvas id="movies-chart" width="1000" height="500">  <img src="./chucky.png" alt="chucky">
+        </canvas>
+    </div>
+
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767'; 
+        const totalPages = 1; 
+        let horrorMovies = [];
+        const chuckyImage = new Image();  // Créer un objet Image pour l'image de Chucky
+        chuckyImage.src = './chucky.png';  // URL de l'image de Chucky
+
+        // Fonction pour récupérer les films d'horreur
+        function fetchHorrorMovies() {
+            for (let page = 1; page <= totalPages; page++) {
+                fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&with_genres=27&language=fr-FR&page=${page}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.results.forEach(movie => fetchMovieDetails(movie.id));
+                    })
+                    .catch(error => console.error(`Erreur lors de la récupération de la page ${page}:`, error));
+            }
+        }
+
+        // Fonction pour récupérer les détails d'un film
+        function fetchMovieDetails(movieId) {
+            fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apiKey}&language=fr-FR`)
+                .then(response => response.json())
+                .then(movie => {
+                    const countries = movie.production_countries || [];
+                    countries.forEach(country => {
+                        horrorMovies.push(country.name);
+                    });
+                    updateChart();
+                })
+                .catch(error => console.error(`Erreur lors de la récupération des détails du film ${movieId}:`, error));
+        }
+
+        // Calculer les pourcentages des films par pays
+        function calculateCountryPercentages() {
+            const countryCounts = horrorMovies.reduce((acc, country) => {
+                acc[country] = (acc[country] || 0) + 1;
+                return acc;
+            }, {});
+
+            const totalMovies = horrorMovies.length;
+            const percentages = Object.keys(countryCounts).map(country => ({
+                country,
+                percentage: ((countryCounts[country] / totalMovies) * 100).toFixed(2)
+            }));
+
+            return percentages;
+        }
+
+        // Mettre à jour le graphique
+        function updateChart() {
+            const percentages = calculateCountryPercentages();
+            const countries = percentages.map(item => item.country);
+            const data = percentages.map(item => item.percentage);
+
+            const ctx = document.getElementById('movies-chart').getContext('2d');
+            if (window.horrorChart) {
+                window.horrorChart.destroy();
+            }
+
+            window.horrorChart = new Chart(ctx, {
+                type: 'polarArea', //radar, polarArea
+                data: {
+                    labels: countries,
+                    datasets: [{
+                        label: 'Pourcentage de films d\'horreur par pays',
+                        data: data,
+                        backgroundColor: 'rgba(133, 6, 6)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: value => `${value}%`
+                            }
+                        }
+                    },
+                    // Ajouter une fonction après le dessin des datasets pour dessiner l'image de Chucky
+                    plugins: {
+                        afterDatasetsDraw: function(chart) {
+                            const ctx = chart.ctx;
+                            const datasetMeta = chart.getDatasetMeta(0);
+                            datasetMeta.data.forEach(function(polarArea, index) {
+                                const x = polarArea.x;
+                                const y = polarArea.y;
+                                const width = polarArea.width;
+                                const height = polarArea.height;
+
+                                // Dessiner l'image de Chucky au-dessus de chaque barre
+                                ctx.drawImage(chuckyImage, x - width / 2, y - height - 20, 30, 30); 
+                                
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        // Appel principal
+        fetchHorrorMovies();
+    </script>
+</body>
+</html>
