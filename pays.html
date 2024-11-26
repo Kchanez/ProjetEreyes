@@ -12,7 +12,8 @@
     <h1>Statistiques des Films d'Horreur par Pays</h1>
     <div>
         <h3>Graphique</h3>
-        <canvas id="movies-chart" width="1000" height="500"></canvas>
+        <canvas id="movies-chart" width="1000" height="500">  <img src="./chucky.png" alt="chucky">
+        </canvas>
     </div>
 
     <script>
@@ -76,14 +77,13 @@
             }
 
             window.horrorChart = new Chart(ctx, {
-                type: 'bar',
+                type: 'polarArea', //radar, polarArea
                 data: {
                     labels: countries,
                     datasets: [{
                         label: 'Pourcentage de films d\'horreur par pays',
                         data: data,
-                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                        borderColor: 'rgba(255, 99, 132, 1)',
+                        backgroundColor: 'rgba(133, 6, 6)',
                         borderWidth: 1
                     }]
                 },
@@ -103,14 +103,15 @@
                         afterDatasetsDraw: function(chart) {
                             const ctx = chart.ctx;
                             const datasetMeta = chart.getDatasetMeta(0);
-                            datasetMeta.data.forEach(function(bar, index) {
-                                const x = bar.x;
-                                const y = bar.y;
-                                const width = bar.width;
-                                const height = bar.height;
+                            datasetMeta.data.forEach(function(polarArea, index) {
+                                const x = polarArea.x;
+                                const y = polarArea.y;
+                                const width = polarArea.width;
+                                const height = polarArea.height;
 
                                 // Dessiner l'image de Chucky au-dessus de chaque barre
-                                ctx.drawImage(chuckyImage, x - width / 2, y - height - 20, 30, 30);  // Modifier les valeurs pour ajuster la taille et position
+                                ctx.drawImage(chuckyImage, x - width / 2, y - height - 20, 30, 30); 
+                                
                             });
                         }
                     }
