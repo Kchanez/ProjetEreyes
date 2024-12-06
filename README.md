@@ -17,4 +17,4 @@ https://Kchanez.github.io/ProjetEreyes/pays.html
 
 
 Site final
-https://Kchanez.github.io/ProjetEreyes/accueil.html
+https://Kchanez.github.io/ProjetEreyes/PopCorn/accueil.html
