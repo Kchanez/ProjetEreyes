@@ -14,3 +14,7 @@ https://Kchanez.github.io/ProjetEreyes/test.html
 
 Stats d'un seul film d'horreur  par pays: 
 https://Kchanez.github.io/ProjetEreyes/pays.html
+
+
+Site final
+https://Kchanez.github.io/ProjetEreyes/accueil.html
