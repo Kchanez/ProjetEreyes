@@ -90,6 +90,15 @@ body
     gap: 35px;
 }
 .droite {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
     width: 50%;
     border: 1px solid white;
+}
+
+canvas {
+    max-width: 100%;
+    max-height: 100%;
 }
