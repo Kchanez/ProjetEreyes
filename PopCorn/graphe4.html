@@ -7,15 +7,12 @@
     <title>Graphe 4</title>
 </head>
 <body>
-    
-
     <div class="acceuil">
         <div class="barreHaut"></div>
         <div class="img">
-                <img src="./Images/DataWood.svg" alt="DataWood">
+            <img src="./Images/DataWood.svg" alt="DataWood">
         </div>
         <div class="corp">
-            
             <div class="gauche">    
                 <div class="btn">
                     <a class="Retour" href="./Accueil.html">
@@ -25,21 +22,124 @@
                 </div>
                 <div class="PlusPopulaire">
                     <img src="./Images/N4.svg" alt="N1">
-                    <h1>
-                        Les films les plus longs en durée.
-                    </h1>
+                    <h1>Les films les plus longs en durée.</h1>
                     <p>
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis, minima accusamus. Impedit magnam error eius, deserunt consequatur, libero qui aperiam eveniet tenetur provident, soluta veritatis 
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis, minima accusamus. 
+                        Impedit magnam error eius, deserunt consequatur, libero qui aperiam eveniet tenetur provident, soluta veritatis.
                     </p>
                 </div>
             </div>
             <div class="droite">
-                
+                <canvas id="scatter-chart" width="400" height="400"></canvas>
             </div>
         </div>
         <div class="barreBas"></div>
     </div>
 
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767';
 
+        function fetchMoviesByDuration() {
+            fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=runtime.desc&language=fr-FR&page=1`)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results.slice(0, 15); // Limite à 15 films
+                    const moviesWithDurations = [];
+
+                    const durationPromises = movies.map(movie =>
+                        fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`)
+                            .then(response => response.json())
+                            .then(details => {
+                                if (details.runtime > 0) {
+                                    moviesWithDurations.push({
+                                        title: movie.title,
+                                        runtime: details.runtime
+                                    });
+                                }
+                            })
+                    );
+
+                    Promise.all(durationPromises).then(() => updateScatterChart(moviesWithDurations));
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des films:', error);
+                    document.querySelector('.droite').innerHTML = `<p>Erreur: ${error.message}. Vérifiez votre connexion ou réessayez plus tard.</p>`;
+                });
+        }
+
+        function updateScatterChart(movies) {
+            const topMovies = movies.slice(0, 10); // Obtenir les 10 films les plus longs
+            const durations = topMovies.map(movie => movie.runtime);
+            const titles = topMovies.map(movie => movie.title);
+
+            // Créer les données pour le scatter plot
+            const scatterData = {
+                datasets: [{
+                    label: 'Durée des films (en minutes)',
+                    data: topMovies.map((movie, index) => ({
+                        x: index + 1, // Utiliser l'index comme coordonnée X
+                        y: movie.runtime,
+                        label: movie.title
+                    })),
+                    backgroundColor: 'rgba(75, 192, 192, 1)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            };
+
+            const ctx = document.getElementById('scatter-chart').getContext('2d');
+            if (window.scatterChart) {
+                window.scatterChart.destroy();
+            }
+
+            window.scatterChart = new Chart(ctx, {
+                type: 'scatter', // Type scatter plot
+                data: scatterData,
+                options: {
+                    responsive: true,
+                    scales: {
+                        x: {
+                            type: 'linear',
+                            position: 'bottom',
+                            title: {
+                                display: true,
+                                text: 'Index du film'
+                            }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Durée (minutes)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return tooltipItem.raw.label + ': ' + tooltipItem.raw.y + ' minutes';
+                                }
+                            }
+                        },
+                        datalabels: {
+                            formatter: function(value, ctx) {
+                                return ctx.chart.data.datasets[0].data[ctx.dataIndex].label + ': ' + value.y + ' min';
+                            },
+                            color: 'black',
+                            font: {
+                                weight: 'bold',
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        fetchMoviesByDuration();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
