@@ -34,12 +34,81 @@
                 </div>
             </div>
             <div class="droite">
-                
+                <canvas id="budget-chart" width="400" height="400"></canvas>
             </div>
         </div>
         <div class="barreBas"></div>
     </div>
 
 
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767';
+        function fetchMoviesByBudget() {
+            fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=fr-FR&page=1`)
+                .then(response => response.json())
+                .then(data => {
+                    const movies = data.results.slice(0, 10); // Limite à 10 films
+                    const moviesWithBudgets = [];
+
+                    const budgetPromises = movies.map(movie =>
+                        fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`)
+                            .then(response => response.json())
+                            .then(details => {
+                                moviesWithBudgets.push({
+                                    title: movie.title,
+                                    budget: details.budget || 0 // Remplace null par 0
+                                });
+                            })
+                    );
+
+                    Promise.all(budgetPromises).then(() => updateBudgetChart(moviesWithBudgets));
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des films:', error);
+                    document.querySelector('.droite').innerHTML = `<p>Erreur: ${error.message}. Vérifiez votre connexion ou réessayez plus tard.</p>`;
+                });
+        }
+
+
+        function updateBudgetChart(movies) {
+            const topMovies = movies.slice(0, 10); // Obtenir les 10 films avec le budget le plus élevé
+            const labels = topMovies.map(movie => movie.title);
+            const data = topMovies.map(movie => movie.budget);
+
+            const ctx = document.getElementById('budget-chart').getContext('2d');
+            if (window.budgetChart) {
+                window.budgetChart.destroy();
+            }
+
+            window.budgetChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: data.map((budget, index) => ({
+                        label: labels[index],
+                        data: [{ x: index, y: budget, r: Math.sqrt(budget / 1000000) * 2 }], // Multipliez par un facteur (par exemple 2) pour augmenter la taille
+                        backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`
+                    }))
+                },
+                options: {
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.raw.y.toLocaleString()} $`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { display: false },
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+        fetchMoviesByBudget();
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 </html>
