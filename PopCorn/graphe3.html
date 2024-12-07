@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./StyleGraphe.css">
-    <title>Graphe1</title>
+    <title>Graphe 3</title>
 </head>
 <body>
     
@@ -47,27 +47,58 @@
             fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=fr-FR&page=1`)
                 .then(response => response.json())
                 .then(data => {
-                    const movies = data.results.slice(0, 10); // Limite à 10 films
+                    const movies = data.results.slice(0, 15); // Limite à 15 films
                     const moviesWithBudgets = [];
 
                     const budgetPromises = movies.map(movie =>
                         fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`)
                             .then(response => response.json())
                             .then(details => {
-                                moviesWithBudgets.push({
-                                    title: movie.title,
-                                    budget: details.budget || 0 // Remplace null par 0
-                                });
+                                if (details.budget > 0) {
+                                    // Si le film a un budget valide, on l'ajoute à la liste
+                                    moviesWithBudgets.push({
+                                        title: movie.title,
+                                        budget: details.budget
+                                    });
+                                }
                             })
                     );
 
-                    Promise.all(budgetPromises).then(() => updateBudgetChart(moviesWithBudgets));
+                    // Quand tous les films ont été récupérés
+                    Promise.all(budgetPromises).then(() => {
+                        // Vérifie si nous avons moins de 15 films avec un budget valide
+                        if (moviesWithBudgets.length < 15) {
+                            // Si moins de 15 films, on récupère des films avec les plus gros budgets
+                            fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=budget.desc&language=fr-FR&page=1`)
+                                .then(response => response.json())
+                                .then(data => {
+                                    const additionalMovies = data.results.slice(0, 15 - moviesWithBudgets.length);
+                                    additionalMovies.forEach(movie => {
+                                        fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`)
+                                            .then(response => response.json())
+                                            .then(details => {
+                                                if (details.budget > 0) {
+                                                    moviesWithBudgets.push({
+                                                        title: movie.title,
+                                                        budget: details.budget
+                                                    });
+                                                }
+                                            });
+                                    });
+                                });
+                        }
+
+                        // Une fois tous les films récupérés, on met à jour le graphique
+                        Promise.all(budgetPromises).then(() => updateBudgetChart(moviesWithBudgets));
+                    });
                 })
                 .catch(error => {
                     console.error('Erreur lors de la récupération des films:', error);
                     document.querySelector('.droite').innerHTML = `<p>Erreur: ${error.message}. Vérifiez votre connexion ou réessayez plus tard.</p>`;
                 });
         }
+
+
 
 
         function updateBudgetChart(movies) {
@@ -110,5 +141,6 @@
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
 </body>
 </html>
