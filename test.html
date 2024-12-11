@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recherche de Film</title>
+    <style>
+        body {
+            font-family: 'Cinzel', sans-serif;
+            padding: 20px;
+            background-color: #f9fafc;
+            color: #333;
+            margin: 0;
+        }
+
+        .search-container {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #0077ff;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #0077ff;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #005bb5;
+        }
+
+        #movie-info {
+            margin: auto;
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 80%;
+            align-items: center;
+        }
+
+        #movie-info img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-top: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        #movie-info h2 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        #movie-info p {
+            line-height: 1.2;
+            font-size: 16px;
+            text-align: left;
+            width: 80%;
+        }
+
+        .bottle-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .bottle {
+            position: relative;
+            width: 5%;
+            height: 300px;
+            border: 10px solid #DBE2EB;
+            border-top: 0px;
+            border-radius: 0px 0px 15px 15px;
+            background: linear-gradient(to bottom, #EEFAFF, #fff);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: inline-flex;
+            align-items: flex-end;
+            justify-content: center;
+            transition: transform 0.3s;
+        }
+
+        .bottle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .bottle-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            background-color: #ff4d4d;
+            height: 0;
+            animation: fill-animation 3s ease-out forwards;
+        }
+
+        @keyframes fill-animation {
+            from {
+                height: 0;
+            }
+            to {
+                height: var(--fill-height, 0%);
+            }
+        }
+
+        .bottle-label {
+            position: relative;
+            z-index: 1;
+            bottom: 20%;
+            color:#fff;
+        }
+
+        .label {
+            position: absolute;
+            color:#fff;
+            bottom: 80%;
+            z-index: 1;
+        }
+
+        /* Mode Horreur */
+        .horror-mode {
+            background-color: #0c0c0c;
+            color: #ff5c5c;
+        }
+
+        .horror-mode input[type="text"] {
+            background-color: #7a0000;
+            color: #ff5c5c;
+            border: 1px solid #ff2e2e;
+        }
+
+        .horror-mode button {
+            background-color: #ff0000;
+            color: #fff;
+            border: 1px solid #7a0000;
+        }
+
+        .horror-mode button:hover {
+            background-color: #cc0000;
+        }
+
+        .horror-mode #movie-info {
+            background-color: #1a0000;
+            color: #fff;
+            box-shadow: 0 4px 8px rgba(255, 0, 0, 0.4);
+        }
+
+        .horror-mode #movie-info img {
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.7);
+        }
+
+        .horror-mode .bottle {
+            background: linear-gradient(to bottom, #7a0000, #400000);
+            border: 10px solid #600000;
+        }
+
+        .horror-mode .bottle:hover {
+            box-shadow: 0 6px 12px rgba(255, 0, 0, 0.6);
+        }
+
+        .horror-mode .bottle-fill {
+            background-color: #ff1a1a;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-container">
+        <input type="text" id="movie-search" placeholder="Rechercher un film...">
+        <button onclick="searchMovie()">Chercher</button>
+    </div>
+
+    <div id="movie-info"></div>
+    <div class="bottle-container" id="bottle-container"></div>
+
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767';
+        const baseUrl = 'https://api.themoviedb.org/3';
+
+        // Appliquer le mode horreur automatiquement
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('horror-mode');
+        });
+
+        function searchMovie() {
+            const query = document.getElementById('movie-search').value.trim();
+            if (query === '') {
+                alert('Veuillez entrer le nom d\'un film.');
+                return;
+            }
+
+            fetch(`${baseUrl}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.results.length > 0) {
+                        fetchMovieDetails(data.results[0].id);
+                    } else {
+                        alert('Aucun film trouvé.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                    alert('Une erreur est survenue lors de la recherche du film.');
+                });
+        }
+
+        function fetchMovieDetails(movieId) {
+            fetch(`${baseUrl}/movie/${movieId}?api_key=${apiKey}&language=fr-FR`)
+                .then(response => response.json())
+                .then(movieDetails => {
+                    displayMovieInfo(movieDetails);
+                })
+                .catch(error => {
+                    console.error('Erreur:', error);
+                });
+        }
+
+        function displayMovieInfo(movie) 
+        {
+            const movieInfo = document.getElementById('movie-info');
+            const bottleContainer = document.getElementById('bottle-container');
+
+            movieInfo.innerHTML = `
+                <h1>${movie.title} (${new Date(movie.release_date).getFullYear()})</h1>
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                <p><strong>Description:</strong> ${movie.overview}</p>
+                <p><strong>Genres:</strong> ${movie.genres.map(genre => genre.name).join(', ')}</p>
+                <p><strong>Langue originale:</strong> ${movie.original_language.toUpperCase()}</p>
+                <p><strong>Pays de production:</strong> ${movie.production_countries.map(country => country.name).join(', ')}</p>
+                <p><strong>Durée:</strong> ${movie.runtime} minutes</p>
+                <p><strong>Note moyenne:</strong> ${movie.vote_average}</p>
+                <p><strong>Popularité:</strong> ${movie.popularity}</p>
+                <p><strong>Nombre de votes:</strong> ${movie.vote_count}</p>
+            `;
+
+            const voteAveragePercent = movie.vote_average * 10;
+            const popularityPercent = Math.min((movie.popularity / 1000) * 100, 100);
+            const voteCountPercent = Math.min((movie.vote_count / 1000) * 100, 100);
+
+            bottleContainer.innerHTML = `
+                <div class="bottle">
+                    <div class="label">Note</div>
+                    <div class="bottle-label">${voteAveragePercent}%</div>
+                    <div class="bottle-fill" style="--fill-height: ${voteAveragePercent}%"></div>
+                </div>
+                <div class="bottle">
+                    <div class="label">Popularité</div>
+                    <div class="bottle-label">${popularityPercent}%</div>
+                    <div class="bottle-fill" style="--fill-height: ${popularityPercent}%"></div>
+                </div>
+                <div class="bottle">
+                    <div class="label">Votes</div>
+                    <div class="bottle-label">${voteCountPercent}%</div>
+                    <div class="bottle-fill" style="--fill-height: ${voteCountPercent}%"></div>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>

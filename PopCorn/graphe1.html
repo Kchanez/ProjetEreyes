@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./StyleGraphe.css">
+    <title>Graphe1</title>
+</head>
+<body>
+    <div class="acceuil">
+        <div class="barreHaut"></div>
+        <div class="img">
+                <img src="./Images/DataWood.svg" alt="DataWood">
+        </div>
+        <div class="corp">
+            
+            <div class="gauche">    
+                <div class="btn">
+                    <a class="Retour" href="./Accueil.html">
+                    <img src="./Images/Arrow 1.svg" alt="back">
+                        Retour
+                    </a>
+                </div>
+                <div class="PlusPopulaire">
+                    <img src="./Images/N1.svg" alt="N1">
+                    <h1>
+                        Les genres les plus populaires.
+                    </h1>
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Perspiciatis, minima accusamus. Impedit magnam error eius, deserunt consequatur, libero qui aperiam eveniet tenetur provident, soluta veritatis 
+                    </p>
+                </div>
+            </div>
+            <div class="droite">
+                <canvas id="genre-chart" width="400" height="400"></canvas>
+            </div>
+        </div>
+        <div class="barreBas"></div>
+    </div>
+
+
+    <script>
+        const apiKey = 'f419f1613639c532f9f464ad9e648767';
+        const totalPages = 1;
+        let popularMovies = [];
+        let genres = {};
+
+        function fetchGenres() {
+            return fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${apiKey}&language=fr-FR`)
+                .then(response => response.json())
+                .then(data => {
+                    data.genres.forEach(genre => {
+                        genres[genre.id] = genre.name;
+                    });
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la requête:', error);
+                    document.querySelector('.droite').innerHTML = `<p>Erreur: ${error.message}. Vérifiez votre connexion ou réessayez plus tard.</p>`;
+                });
+
+        }
+
+        function fetchPopularMovies() {
+            for (let page = 1; page <= totalPages; page++) {
+                fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}&language=fr-FR&page=${page}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        data.results.forEach(movie => {
+                            popularMovies.push({
+                                title: movie.title,
+                                popularity: movie.popularity,
+                                genre_ids: movie.genre_ids
+                            });
+                        });
+                        updateGenreStatistics(); // Mise à jour du graphique après chaque page
+                    })
+                    .catch(error => {
+                        console.error(`Erreur lors de la récupération de la page ${page}:`, error);
+                        document.querySelector('.droite').innerHTML = `<p>Impossible de charger les données. Réessayez plus tard.</p>`;
+                    });
+            }
+        }
+
+
+        function updateGenreStatistics() {
+                const genreCounts = {};
+
+                popularMovies.forEach(movie => {
+                    movie.genre_ids.forEach(genreId => {
+                        const genreName = genres[genreId];
+                        if (genreName) {
+                            genreCounts[genreName] = (genreCounts[genreName] || 0) + 1;
+                        }
+                    });
+                });
+
+                const sortedGenres = Object.entries(genreCounts).sort((a, b) => b[1] - a[1]);
+                const labels = sortedGenres.map(([genre]) => genre);
+                const data = sortedGenres.map(([_, count]) => count);
+
+                const ctx = document.getElementById('genre-chart').getContext('2d');
+                if (window.genreChart) {
+                    window.genreChart.destroy();
+                }
+
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(75, 192, 192, 0.8)');
+                gradient.addColorStop(1, 'rgba(153, 102, 255, 0.8)');
+
+                window.genreChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Nombre de films par genre',
+                            data: data,
+                            backgroundColor: gradient,
+                            borderColor: 'rgba(153, 102, 255, 1)',
+                            borderWidth: 2,
+                            borderRadius: 10, // Arrondi des bordures
+                            barPercentage: 0.7, // Réduction de la largeur des barres
+                            hoverBackgroundColor: 'rgba(255, 159, 64, 0.9)' // Couleur au survol
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                display: true,
+                                labels: {
+                                    color: '#333', // Couleur de la légende
+                                    font: {
+                                        size: 14,
+                                        weight: 'bold'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                titleColor: '#fff',
+                                bodyColor: '#fff'
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: {
+                                    color: '#333',
+                                    font: {
+                                        size: 12
+                                    }
+                                },
+                                grid: {
+                                    display: false
+                                }
+                            },
+                            y: {
+                                ticks: {
+                                    color: '#333',
+                                    font: {
+                                        size: 12
+                                    },
+                                    stepSize: 1
+                                },
+                                grid: {
+                                    color: 'rgba(200, 200, 200, 0.3)'
+                                },
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            }
+
+        fetchGenres().then(fetchPopularMovies);
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+</html>

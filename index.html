@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Movies Display</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <h1>Liste des Films</h1>
+    <div>
+        <h3>Filtrer par Genre</h3>
+        <select id="genre-filter">
+            <option value="all">Tous les genres</option>
+        </select>
+    </div>
+    <div>
+        <h3>Filtrer par Langue</h3>
+        <select id="language-filter">
+            <option value="all">Toutes les langues</option>
+        </select>
+    </div>
+
+
+    <div>
+        <h3>Statistiques des Films</h3>
+        <canvas id="movies-chart"></canvas>
+    </div>
+    <!-- Liste des films -->
+    <div id="movies"></div>
+
+    <!-- Bouton pour télécharger en CSV -->
+    <button id="download-csv">Télécharger les films en CSV</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="index.js"></script>
+    <script src="excel.js"></script>
+    <script src="graphe.js"></script>
+</body>
+</html>
