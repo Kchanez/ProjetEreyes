@@ -124,7 +124,6 @@ body
     flex-direction: column;
     width: 80%;
     align-items: flex-start;
-    margin: 50px auto;
 }
 .text > img {
     margin-bottom: 85px;
@@ -144,11 +143,14 @@ body
     line-height: 2;
     max-width: 100%;
 }
+.ticket{
+    height: 5%;
+}
 
 .tickets {
     display: flex;
     flex-direction: row;
-    width: 50%;
+    width: 100%;
     align-items: center;
     margin: 0px auto;
     justify-content: space-between;
