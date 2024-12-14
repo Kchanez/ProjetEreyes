@@ -38,18 +38,18 @@ body
 .gauche
 {
     display: flex;
-    align-items: flex-start;  /* Aligne les éléments à gauche */
+    align-items: flex-start;  
     flex-direction: column;
-    justify-content: center;  /* Centre les éléments verticalement */
+    justify-content: center;  
     position: relative;
     width: 75%;
     z-index: 1;
-    height: 100vh;  /* Hauteur de la fenêtre pour un centrage vertical */
+    height: 100vh;  
 }
 .droite > img {
     position: absolute;
     right: 10%;
-    top: 15vh; /* L'image sera déplacée de 10% de la hauteur de la fenêtre */
+    top: 15vh;
 }
 
 .gauche > h1,  .gauche > p 

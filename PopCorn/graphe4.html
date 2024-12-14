@@ -18,6 +18,10 @@
                     <img src="./Images/Arrow 1.svg" alt="back">
                         Retour
                     </a>
+                    <a class="Retour" href="#" id="download-duration-csv">
+                        <img src="./Images/telecharger.png" alt="Download">
+                            .CSV
+                    </a>
                 </div>
                 <div class="PlusPopulaire">
                     <img src="./Images/N4.svg" alt="N1">
@@ -41,7 +45,7 @@
             fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=runtime.desc&language=fr-FR&page=1`)
                 .then(response => response.json())
                 .then(data => {
-                    const movies = data.results.slice(0, 15); // Limite à 15 films
+                    const movies = data.results.slice(0, 15); 
                     const moviesWithDurations = [];
 
                     const durationPromises = movies.map(movie =>
@@ -66,16 +70,15 @@
         }
 
         function updateScatterChart(movies) {
-            const topMovies = movies.slice(0, 10); // Obtenir les 10 films les plus longs
+            const topMovies = movies.slice(0, 10); 
             const durations = topMovies.map(movie => movie.runtime);
             const titles = topMovies.map(movie => movie.title);
 
-            // Créer les données pour le scatter plot
             const scatterData = {
                 datasets: [{
                     label: 'Durée des films (en minutes)',
-                    data: topMovies.map((movie, index) => ({
-                        x: index + 1, // Utiliser l'index comme coordonnée X
+                    data: topMovies.map(movie => ({
+                        x: titles.indexOf(movie.title), 
                         y: movie.runtime,
                         label: movie.title
                     })),
@@ -91,53 +94,80 @@
             }
 
             window.scatterChart = new Chart(ctx, {
-                type: 'scatter', // Type scatter plot
-                data: scatterData,
-                options: {
-                    responsive: true,
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                            title: {
-                                display: true,
-                                text: 'Index du film'
-                            }
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Durée (minutes)'
-                            }
-                        }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return tooltipItem.raw.label + ': ' + tooltipItem.raw.y + ' minutes';
-                                }
-                            }
-                        },
-                        datalabels: {
-                            formatter: function(value, ctx) {
-                                return ctx.chart.data.datasets[0].data[ctx.dataIndex].label + ': ' + value.y + ' min';
-                            },
-                            color: 'black',
-                            font: {
-                                weight: 'bold',
-                                size: 12
-                            }
-                        }
+            type: 'scatter', 
+            data: scatterData,
+            options: {
+                responsive: true,
+                scales: {
+                    x: {
+                        type: 'category', 
+                        labels: titles, 
+                        position: 'bottom',
+                        title: {
+                            display: true,
+                            text: 'Titre du film'
+                    }
+                },
+                y: {
+                    title: {
+                        display: true,
+                        text: 'Durée (minutes)'
                     }
                 }
-            });
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(tooltipItem) {
+                            return tooltipItem.raw.label + ': ' + tooltipItem.raw.y + ' minutes';
+                        }
+                    }
+                },
+                datalabels: {
+                    formatter: function(value, ctx) {
+                        return ctx.chart.data.datasets[0].data[ctx.dataIndex].label + ': ' + value.y + ' min';
+                    },
+                    color: 'black',
+                    font: {
+                        weight: 'bold',
+                        size: 12
+                    }
+                }
+            }
         }
+             });
+        }
+
 
         fetchMoviesByDuration();
     </script>
 
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+            document.getElementById('download-duration-csv').addEventListener('click', function (e) {
+            e.preventDefault(); 
+            if (!window.scatterChart) {
+                alert("Aucune donnée disponible à télécharger. Attendez que le graphe soit généré.");
+                return;
+            }
+            const movies = window.scatterChart.data.datasets[0].data;
+            let csvContent = "Index,Titre,Durée (minutes)\n";
+            movies.forEach((movie, index) => {
+                csvContent += `${index + 1},${movie.label},${movie.y}\n`;
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "films_plus_longs.csv"; 
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+    </script>
 </body>
 </html>

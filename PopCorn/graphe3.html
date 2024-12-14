@@ -21,6 +21,10 @@
                     <img src="./Images/Arrow 1.svg" alt="back">
                         Retour
                     </a>
+                    <a class="Retour" href="#" id="download-budget-csv">
+                        <img src="./Images/telecharger.png" alt="Download">
+                            .CSV
+                    </a>
                 </div>
                 <div class="PlusPopulaire">
                     <img src="./Images/N3.svg" alt="N1">
@@ -45,7 +49,7 @@
             fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=popularity.desc&language=fr-FR&page=1`)
                 .then(response => response.json())
                 .then(data => {
-                    const movies = data.results.slice(0, 15); // Limite à 15 films
+                    const movies = data.results.slice(0, 15); 
                     const moviesWithBudgets = [];
 
                     const budgetPromises = movies.map(movie =>
@@ -53,7 +57,6 @@
                             .then(response => response.json())
                             .then(details => {
                                 if (details.budget > 0) {
-                                    // Si le film a un budget valide, on l'ajoute à la liste
                                     moviesWithBudgets.push({
                                         title: movie.title,
                                         budget: details.budget
@@ -62,11 +65,8 @@
                             })
                     );
 
-                    // Quand tous les films ont été récupérés
                     Promise.all(budgetPromises).then(() => {
-                        // Vérifie si nous avons moins de 15 films avec un budget valide
                         if (moviesWithBudgets.length < 15) {
-                            // Si moins de 15 films, on récupère des films avec les plus gros budgets
                             fetch(`https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&sort_by=budget.desc&language=fr-FR&page=1`)
                                 .then(response => response.json())
                                 .then(data => {
@@ -85,8 +85,6 @@
                                     });
                                 });
                         }
-
-                        // Une fois tous les films récupérés, on met à jour le graphique
                         Promise.all(budgetPromises).then(() => updateBudgetChart(moviesWithBudgets));
                     });
                 })
@@ -100,7 +98,7 @@
 
 
         function updateBudgetChart(movies) {
-            const topMovies = movies.slice(0, 10); // Obtenir les 10 films avec le budget le plus élevé
+            const topMovies = movies.slice(0, 10); 
             const labels = topMovies.map(movie => movie.title);
             const data = topMovies.map(movie => movie.budget);
 
@@ -114,7 +112,7 @@
                 data: {
                     datasets: data.map((budget, index) => ({
                         label: labels[index],
-                        data: [{ x: index, y: budget, r: Math.sqrt(budget / 1000000) * 2 }], // Multipliez par un facteur (par exemple 2) pour augmenter la taille
+                        data: [{ x: index, y: budget, r: Math.sqrt(budget / 1000000) * 2 }],
                         backgroundColor: `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.6)`
                     }))
                 },
@@ -137,8 +135,33 @@
         }
         fetchMoviesByBudget();
     </script>
-
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
+    <script>
+            document.getElementById('download-budget-csv').addEventListener('click', function (e) {
+            e.preventDefault(); 
+            if (!window.budgetChart) {
+                alert("Aucune donnée à télécharger. Veuillez attendre que le graphe soit généré.");
+                return;
+            }
+            const movies = window.budgetChart.data.datasets;
+            let csvContent = "Film,Budget (en $)\n";
+
+            movies.forEach(dataset => {
+                const title = dataset.label;
+                const budget = dataset.data[0].y; 
+                csvContent += `${title},${budget}\n`;
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "films_haut_budget.csv"; 
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        });
+
+    </script>
 </body>
 </html>

@@ -21,6 +21,10 @@
                     <img src="./Images/Arrow 1.svg" alt="back">
                         Retour
                     </a>
+                    <a class="Retour" href="#" id="download-csv">
+                        <img src="./Images/telecharger.png" alt="Download">
+                            .CSV
+                    </a>
                 </div>
                 <div class="PlusPopulaire">
                     <img src="./Images/N2.svg" alt="N1">
@@ -114,6 +118,31 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
+    <script>
+            document.getElementById('download-csv').addEventListener('click', function (e) {
+            e.preventDefault(); 
+            if (!window.popularChart) {
+                alert("Aucune donnée à télécharger.");
+                return;
+            }
+            const titles = window.popularChart.data.labels;
+            const popularity = window.popularChart.data.datasets[0].data;
+            let csvContent = "Titre,Popularité\n";
+            titles.forEach((title, index) => {
+                csvContent += `${title},${popularity[index]}\n`;
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "popular_movies.csv"; 
+            a.style.display = 'none';
 
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+        });
+
+    </script>
 </body>
 </html>

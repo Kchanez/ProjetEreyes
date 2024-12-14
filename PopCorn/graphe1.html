@@ -19,6 +19,10 @@
                     <img src="./Images/Arrow 1.svg" alt="back">
                         Retour
                     </a>
+                    <a class="Retour" href="#" id="download-csv">
+                        <img src="./Images/telecharger.png" alt="Download">
+                            .CSV
+                    </a>
                 </div>
                 <div class="PlusPopulaire">
                     <img src="./Images/N1.svg" alt="N1">
@@ -70,7 +74,7 @@
                                 genre_ids: movie.genre_ids
                             });
                         });
-                        updateGenreStatistics(); // Mise à jour du graphique après chaque page
+                        updateGenreStatistics(); 
                     })
                     .catch(error => {
                         console.error(`Erreur lors de la récupération de la page ${page}:`, error);
@@ -115,9 +119,9 @@
                             backgroundColor: gradient,
                             borderColor: 'rgba(153, 102, 255, 1)',
                             borderWidth: 2,
-                            borderRadius: 10, // Arrondi des bordures
-                            barPercentage: 0.7, // Réduction de la largeur des barres
-                            hoverBackgroundColor: 'rgba(255, 159, 64, 0.9)' // Couleur au survol
+                            borderRadius: 10, 
+                            barPercentage: 0.7, 
+                            hoverBackgroundColor: 'rgba(255, 159, 64, 0.9)' 
                         }]
                     },
                     options: {
@@ -126,7 +130,7 @@
                             legend: {
                                 display: true,
                                 labels: {
-                                    color: '#333', // Couleur de la légende
+                                    color: '#333', 
                                     font: {
                                         size: 14,
                                         weight: 'bold'
@@ -172,5 +176,31 @@
         fetchGenres().then(fetchPopularMovies);
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+            document.getElementById('download-csv').addEventListener('click', function (e) {
+            e.preventDefault(); 
+            if (!window.genreChart) {
+                alert("Aucune donnée disponible pour le téléchargement.");
+                return;
+            }
+            const labels = window.genreChart.data.labels;
+            const data = window.genreChart.data.datasets[0].data;
+            let csvContent = "Genre,Nombre de Films\n";
+            labels.forEach((label, index) => {
+                csvContent += `${label},${data[index]}\n`;
+            });
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = "statistiques_genres.csv"; 
+            a.style.display = 'none';
+
+            document.body.appendChild(a); 
+            a.click(); 
+            document.body.removeChild(a); 
+        });
+
+    </script>
 </body>
 </html>
