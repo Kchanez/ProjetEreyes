@@ -105,11 +105,13 @@
                         position: 'bottom',
                         title: {
                             display: true,
-                            text: 'Titre du film'
+                            text: 'Titre du film',
+                            color:'#fff'
                     }
                 },
                 y: {
                     title: {
+                        color:'#fff',
                         display: true,
                         text: 'Durée (minutes)'
                     }
@@ -127,7 +129,7 @@
                     formatter: function(value, ctx) {
                         return ctx.chart.data.datasets[0].data[ctx.dataIndex].label + ': ' + value.y + ' min';
                     },
-                    color: 'black',
+                    color: '#fff',
                     font: {
                         weight: 'bold',
                         size: 12
