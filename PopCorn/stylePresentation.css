@@ -1,0 +1,76 @@
+body
+{
+    margin: 0px;
+    background: #222222;
+}
+.DataWood {
+    width: 350px;
+    height: auto;
+    margin-top: 7%;
+    margin-bottom: 3%;
+}
+.corp
+{
+    margin: auto;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    min-height: 1550px;
+    background-color: #222222;
+}
+
+.gauche
+{
+    display: flex;
+    align-items: flex-start;  
+    flex-direction: column;
+    justify-content: center;  
+    width: 90%;
+    margin: auto;
+}
+
+.gauche > h1
+{
+    font-size: 60px;
+    font-weight:bolder;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #FFE661;
+    margin: 0px;
+    line-height: 2;
+}
+
+.gauche > h2 {
+    color: white;
+    font-weight:bolder;
+    font-size: 28px;
+    margin: 0px;
+}
+
+.gauche > p , .gauche > ul,  .gauche > ol{
+    font-size: 20px;
+    color: white;
+    font-weight: 200;
+}
+
+.gauche > .equipe 
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    text-align: center;
+    color: white;
+    min-height: 390px;
+}
+.gauche > .equipe img {
+    width: 220px;
+    height: 240px;
+    border: 1px solid white;
+    border-radius: 50%;
+}
+.gauche > .equipe p {
+    color: #FFE661;
+    font-weight: bold;
+}
