@@ -67,8 +67,6 @@ body
 .gauche > .equipe img {
     width: 220px;
     height: 240px;
-    border: 1px solid white;
-    border-radius: 50%;
 }
 .gauche > .equipe p {
     color: #FFE661;
