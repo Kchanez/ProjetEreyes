@@ -1,5 +1,12 @@
 /* Style pour tablettes (largeur maximale de 768px) */
 @media (max-width: 768px) {
+    .acceuil > .Logo {
+        width: 80%;
+    }
+
+    .acceuil > .text  {
+        height: 75px;
+    }
     .corp {
         flex-direction: column;
         width: 90%;
@@ -10,6 +17,8 @@
         width: 100%;
         align-items: center;
         margin-bottom: 20px;
+        justify-content: space-between;
+        height: 460px;
     }
 
     .img {
@@ -27,7 +36,15 @@
         font-size: 20px;
         padding: 10px;
     }
-
+    .btn > .Retour img
+    {
+        width: 20px;
+        height: 20px;
+    }
+    .gauche > .PlusPopulaire img
+    {
+        width: 45%;
+    }
     .PlusPopulaire > h1 {
         font-size: 40px;
     }
@@ -44,27 +61,16 @@
 
 /* Style pour mobiles (largeur maximale de 480px) */
 @media (max-width: 480px) {
-    .acceuil > .Logo {
-        width: 100%;
-    }
-
-    .acceuil > .text  {
-        height: 75px;
-    }
-
     .corp {
         width: 80%;
     }
-
+    .acceuil > .Logo {
+        width: 100%;
+    }
     .btn > .Retour {
         width: 80%;
         font-size: 16px;
         padding: 8px;
-    }
-    .btn > .Retour img
-    {
-        width: 20px;
-        height: 20px;
     }
     .PlusPopulaire > h1 {
         font-size: 30px;
@@ -80,11 +86,6 @@
         justify-content: space-between;
         height: 360px;
         align-items: center;
-    }
-    
-    .gauche > .PlusPopulaire img
-    {
-        width: 45%;
     }
 
     .img {

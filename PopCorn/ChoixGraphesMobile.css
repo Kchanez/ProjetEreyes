@@ -1,0 +1,88 @@
+/* Styles pour tablettes (largeur maximale de 768px) */
+@media (max-width: 768px) {
+    .corp2 {
+        width: 85%;
+        min-height: auto;
+    }
+
+    .partie2 {
+        width: 100%;
+        min-height: 350px;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .DataWood {
+        width: 200px;
+        height: auto;
+    }
+
+    .text {
+        width: 100%;
+        min-height: auto;
+        text-align: left;
+    }
+
+    .text > h1 {
+        font-size: 40px;
+    }
+
+    .text > p {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .ticket {
+        display: flex;
+    }
+    .ticket img {
+        width: 90%;
+        margin: auto;
+    }
+
+    .btn > .Retour {
+        font-size: 20px;
+        padding: 10px;
+        width: 90%;
+    }
+}
+
+/* Styles pour mobiles (largeur maximale de 480px) */
+@media (max-width: 480px) {
+    .corp2 {
+        margin: 10px auto;
+    }
+
+    .partie2 {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .text {
+        width: 100%;
+        gap: 15px;
+    }
+
+    .text > h1 {
+        font-size: 30px;
+    }
+
+    .text > p {
+        font-size: 14px;
+        line-height: 1.3;
+    }
+
+    .tickets {
+        gap: 10px;
+    }
+
+    .ticket img {
+        width: 90%;
+    }
+
+    .btn > .Retour {
+        font-size: 18px;
+        padding: 8px;
+        width: 100%;
+    }
+}
