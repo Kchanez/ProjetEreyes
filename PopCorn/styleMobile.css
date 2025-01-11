@@ -1,0 +1,79 @@
+/* Pour tablette (768px et au-dessus, mais inférieur à 1024px) */
+@media screen and (max-width: 1024px) {
+    body {
+        background: #222222;
+        overflow: auto;
+    }
+    .corp {
+        width: 90%;
+        flex-direction: column;
+        align-items: center;
+    }
+    .gauche {
+        width: 100%;
+        align-items: center;
+        text-align: center;
+    }
+    .gauche h1 {
+        font-size: 45px;
+    }
+    .gauche p {
+        font-size: 18px;
+        width: 90%;
+    }
+    .btn {
+        flex-direction: column;
+        gap: 15px;
+    }
+    .btn > .DataFilm, .btn > .explicationProjet {
+        font-size: 18px;
+        width: 90%;
+    }
+    .droite > img {
+        position: relative;
+        width: 80%;
+        top: 0;
+        right: 0;
+    }
+}
+
+/* Pour mobile (jusqu'à 768px) */
+@media screen and (max-width: 768px) {
+    body {
+        background: #222222;
+    }
+    .corp {
+        width: 85%;
+        flex-direction: column;
+        align-items: center;
+    }
+    .gauche {
+        width: 100%;
+        align-items: flex-start;
+        text-align: left;
+        height: 85vh;
+    }
+    .gauche h1 {
+        font-size: 35px;
+    }
+    .gauche p {
+        font-size: 16px;
+        width: 100%;
+    }
+    .gauche > .btn {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .gauche > .btn  .DataFilm, .gauche > .btn .explicationProjet {
+        font-size: 16px;
+        padding: 10px 20px;
+        box-sizing:initial;
+    }
+    .droite > img {
+        display: none;
+    }
+    .DataWood {
+        width: 200px;
+        margin-bottom: 15px;
+    }
+}
