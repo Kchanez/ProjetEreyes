@@ -73,10 +73,15 @@
         grid-template-columns: repeat(2, 1fr); /* 2 images par ligne */
         gap: 20px;
         text-align: center;
+        min-height: 255px;
     }
 
     .gauche > .equipe img {
         width: 150px;
         height: 170px;
+    }
+    .gauche > .equipe h2
+    {
+        font-size: 1em;
     }
 }

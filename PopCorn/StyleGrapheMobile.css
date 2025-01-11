@@ -1,0 +1,102 @@
+/* Style pour tablettes (largeur maximale de 768px) */
+@media (max-width: 768px) {
+    .corp {
+        flex-direction: column;
+        width: 90%;
+        height: auto;
+    }
+
+    .gauche, .droite {
+        width: 100%;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+
+    .img {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .img > img {
+        width: 80%;
+        height: auto;
+    }
+
+    .btn > .Retour {
+        width: 60%;
+        font-size: 20px;
+        padding: 10px;
+    }
+
+    .PlusPopulaire > h1 {
+        font-size: 40px;
+    }
+
+    .PlusPopulaire > p {
+        font-size: 20px;
+        line-height: 1.5;
+    }
+
+    .barreHaut, .barreBas {
+        height: 80px;
+    }
+}
+
+/* Style pour mobiles (largeur maximale de 480px) */
+@media (max-width: 480px) {
+    .acceuil > .Logo {
+        width: 100%;
+    }
+
+    .acceuil > .text  {
+        height: 75px;
+    }
+
+    .corp {
+        width: 80%;
+    }
+
+    .btn > .Retour {
+        width: 80%;
+        font-size: 16px;
+        padding: 8px;
+    }
+    .btn > .Retour img
+    {
+        width: 20px;
+        height: 20px;
+    }
+    .PlusPopulaire > h1 {
+        font-size: 30px;
+    }
+
+    .PlusPopulaire > p {
+        font-size: 16px;
+        line-height: 1.4;
+    }
+
+    .gauche, .droite {
+        width: 100%;
+        justify-content: space-between;
+        height: 360px;
+        align-items: center;
+    }
+    
+    .gauche > .PlusPopulaire img
+    {
+        width: 45%;
+    }
+
+    .img {
+        width: 100%;
+    }
+
+    .img > img {
+        width: 90%;
+        height: auto;
+    }
+
+    .barreHaut, .barreBas {
+        height: 60px;
+    }
+}
