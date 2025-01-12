@@ -17,7 +17,7 @@ body
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    height: 700px;
+    height: 750px;
     margin-bottom: 50px;
 }
 .img

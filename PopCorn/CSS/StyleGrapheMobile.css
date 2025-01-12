@@ -10,7 +10,8 @@
     .corp {
         flex-direction: column;
         width: 90%;
-        height: auto;
+        height: 860px;
+        justify-content: flex-start;
     }
 
     .gauche, .droite {
@@ -20,7 +21,9 @@
         justify-content: space-between;
         height: 460px;
     }
-
+    .droite {
+        height: 360px;
+    }
     .img {
         width: 100%;
         justify-content: center;
@@ -84,7 +87,6 @@
     .gauche, .droite {
         width: 100%;
         justify-content: space-between;
-        height: 360px;
         align-items: center;
     }
 
