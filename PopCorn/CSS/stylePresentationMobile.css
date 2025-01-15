@@ -1,11 +1,9 @@
-/* Styles pour les écrans mobiles (par défaut jusqu'à 600px) */
 @media (max-width: 599px) {
-    /* Mobile - Petits écrans */
     .DataWood {
         width: 80%;
         max-width: 300px;
         height: auto;
-        margin: 5% auto; /* Centre le logo */
+        margin: 5% auto; 
     }
 
     .gauche > h1 {
@@ -31,10 +29,9 @@
         line-height: 1.6;
     }
 
-    /* Grille d'images pour mobile (1 image par ligne) */
     .gauche > .equipe {
         display: grid;
-        grid-template-columns: repeat(2, 1fr); /* 1 image par ligne */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 20px;
         text-align: center;
         margin: 20px 0;
@@ -51,9 +48,7 @@
     }
 }
 
-/* Styles pour les écrans tablettes (de 600px à 1024px) */
 @media (min-width: 600px) and (max-width: 1024px) {
-    /* Tablette - Moyens écrans */
     .gauche > h1 {
         font-size: 45px;
     }
@@ -68,9 +63,8 @@
         font-size: 16px;
     }
 
-    /* Grille d'images pour tablette (2 images par ligne) */
     .gauche > .equipe {
-        grid-template-columns: repeat(2, 1fr); /* 2 images par ligne */
+        grid-template-columns: repeat(2, 1fr); 
         gap: 20px;
         text-align: center;
         min-height: 255px;
